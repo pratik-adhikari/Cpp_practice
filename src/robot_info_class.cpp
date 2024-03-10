@@ -34,4 +34,4 @@ protected:
   std::string serial_number;
   std::string ip_address;
   std::string firmware_version;
-}
+};

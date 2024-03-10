@@ -1,12 +1,13 @@
-#include "robot_info_class.cpp"
+#include "agv_robot_info_class.cpp"
 #include "ros/node_handle.h"
 #include "ros/ros.h"
 
 int main(int argc, char **argv) {
-  ros::init(argc, argv, "robot_info_node");
+  ros::init(argc, argv, "agv_robot_info_node");
   ros::NodeHandle nh;
 
-  RobotInfo robot_info(&nh, "Mir100", "567A359", "169.254.5.180", "3.5.8");
+  AGVRobotInfo robot_info(&nh, "Mir100", "567A359", "169.254.5.180", "3.5.8",
+                          100);
 
   ros::Rate loop_rate(1); // 1 Hz
 
