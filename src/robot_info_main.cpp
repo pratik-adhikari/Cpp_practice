@@ -1,4 +1,4 @@
-#include "robot_info_class.cpp"
+#include "robot_info/robot_info_class.h"
 #include "ros/node_handle.h"
 #include "ros/ros.h"
 

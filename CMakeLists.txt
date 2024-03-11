@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(robot_info)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -102,9 +102,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES robot_info
-#  CATKIN_DEPENDS robotinfo_msgs roscpp
+ INCLUDE_DIRS include/robot_info
+ LIBRARIES hydraulic_system_monitor
+ CATKIN_DEPENDS roscpp robotinfo_msgs
 #  DEPENDS system_lib
 )
 
@@ -115,27 +115,49 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/robot_info.cpp
-# )
+add_library(hydraulic_system_monitor
+  src/hydraulic_system_monitor.cpp
+)
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node src/robot_info_main.cpp src/robot_info_class.cpp)
-add_executable(agv_robot_info_node src/agv_robot_info_main.cpp src/agv_robot_info_class.cpp)
+target_link_libraries(robot_info_node ${catkin_LIBRARIES})
+add_dependencies(robot_info_node robotinfo_msgs_generate_messages_cpp)
 
+############
+add_executable(agv_robot_info_node
+  src/agv_robot_info_main.cpp
+  src/agv_robot_info_class.cpp
+  src/robot_info_class.cpp
+)
+target_link_libraries(agv_robot_info_node ${catkin_LIBRARIES} hydraulic_system_monitor)
+add_dependencies(agv_robot_info_node
+ ${${PROJECT_NAME}_EXPORTED_TARGETS}
+ ${catkin_EXPORTED_TARGETS}
+)
+
+#########
+target_link_libraries(hydraulic_system_monitor
+ ${catkin_LIBRARIES}
+)
+add_dependencies(hydraulic_system_monitor
+ ${${PROJECT_NAME}_EXPORTED_TARGETS}
+ ${catkin_EXPORTED_TARGETS}
+)
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
 # add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(robot_info_node robotinfo_msgs_generate_messages_cpp)
-add_dependencies(agv_robot_info_node robotinfo_msgs_generate_messages_cpp)
+
+# add_dependencies(agv_robot_info_node robotinfo_msgs_generate_messages_cpp)
+
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -148,10 +170,10 @@ add_dependencies(agv_robot_info_node robotinfo_msgs_generate_messages_cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}_node
-  ${catkin_LIBRARIES}
-)
-target_link_libraries(agv_robot_info_node ${catkin_LIBRARIES})
+
+
+
+
 #############
 ## Install ##
 #############
